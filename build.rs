@@ -22,7 +22,7 @@ fn main() {
     compress_and_write(&c04_records, &Path::new(&out_dir).join("eop_c04.bin.zst"));
     compress_and_write(&finals_records, &Path::new(&out_dir).join("eop_finals.bin.zst"));
 
-    let timestamp = chrono_free_utc_date();
+    let timestamp = utc_date();
     fs::write(Path::new(&out_dir).join("eop_timestamp.txt"), &timestamp).unwrap();
 
     eprintln!(
@@ -33,12 +33,8 @@ fn main() {
     );
 }
 
-fn chrono_free_utc_date() -> String {
-    let output = std::process::Command::new("date")
-        .args(["-u", "+%Y-%m-%d"])
-        .output()
-        .expect("failed to run `date`");
-    String::from_utf8(output.stdout).unwrap().trim().to_string()
+fn utc_date() -> String {
+    chrono::Utc::now().format("%Y-%m-%d").to_string()
 }
 
 /// C04 format: fixed-width, 6 header lines, then data.
